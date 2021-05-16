@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:news_app/login_page.dart';
+
 import 'Favorite.dart';
 import 'News.dart';
 
@@ -7,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 void main() {
-  runApp(NewsApp());
+  runApp(LoginPage());
 }
 
 class NewsApp extends StatefulWidget {
