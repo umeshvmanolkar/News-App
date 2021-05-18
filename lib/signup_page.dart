@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/login_page.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -8,6 +9,25 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  Map <String,String> _authData = {
+
+    'email':'',
+    'password':''
+  };
+
+  TextEditingController _passwordController = new TextEditingController();
+
+  Future _submit()async{
+    if(!_formKey.currentState.validate()){
+      //invalid
+      return;
+    }
+    _formKey.currentState.save();
+  }
+
   @override
   Widget build(BuildContext context) {
     var ui;
@@ -47,115 +67,160 @@ class _SignupPageState extends State<SignupPage> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              crossAxisAlignment: CrossAxisAlignment
-                                  .stretch,
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceEvenly,
-                              children: <Widget>[
-                                Center(child: Text("Sign Up",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25), )),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment
+                                    .stretch,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  Center(child: Text("Sign Up",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25), )),
 
-                                SizedBox(height: 20,),
-                                TextField(
-                                  style: TextStyle(fontSize: 18.0,height: 1),
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                      hintText: "Email",
-                                      border:
-                                      OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
-                                ),
+                                  SizedBox(height: 20,),
+                                  TextFormField(
+                                    style: TextStyle(fontSize: 18.0,height: 1),
+                                    decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                        hintText: "Email",
+                                        border:
+                                        OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
 
-                                SizedBox(height: 15,),
+                                    validator: (value){
+                                      // ignore: missing_return
+                                      if(value.isEmpty||!value.contains('@')){
+                                        // ignore: missing_return
+                                        return "Invalid Email";
+                                      }
+                                      return null;
+                                    },
 
-                                TextField(
-
-                                  style: TextStyle(fontSize: 18.0,height: 1),
-
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                      hintText: "Password",
-
-                                      border:
-                                      OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
-                                  obscureText: true,
-                                ),
-
-                                SizedBox(height: 15,),
-
-                                TextField(
-
-                                  style: TextStyle(fontSize: 18.0,height: 1),
-
-                                  decoration: InputDecoration(
-                                      contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                      hintText: "Re-enter Password",
-
-                                      border:
-                                      OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
-                                  obscureText: true,
-                                ),
-
-                                SizedBox(height: 10,),
-
-                                Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(Radius.circular(40)),
+                                    onSaved: (value){
+                                      _authData['email'] = value;
+                                    },
                                   ),
-                                  child:
-                                  ElevatedButton(child:Text("Sign in"),
-                                      onPressed: (){}),
-                                ),
+
+                                  SizedBox(height: 15,),
+
+                                  TextFormField(
+
+                                    style: TextStyle(fontSize: 18.0,height: 1),
+
+                                    decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                        hintText: "Password",
+                                        border:
+                                        OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
+                                    obscureText: true,
+                                    controller: _passwordController,
+
+                                    validator: (value){
+                                      if(value.isEmpty || value.length<5){
+                                        return 'Password is too short';
+                                      }
+                                      return null;
+                                    },
+                                    onSaved: (value){
+                                      _authData['password'] = value;
+                                    },
 
 
-                                SizedBox(height: 10,),
+                                  ),
 
-                                Row( children:[
+                                  SizedBox(height: 15,),
 
-                                  Expanded( child:
+                                  TextFormField(
+
+                                    style: TextStyle(fontSize: 18.0,height: 1),
+
+                                    decoration: InputDecoration(
+                                        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
+                                        hintText: "Re-enter Password",
+
+                                        border:
+                                        OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
+                                    obscureText: true,
+
+                                    validator: (value){
+                                      if(value!=_passwordController.text){
+                                        return "password does not match";
+                                      }
+                                      return null;
+                                    },
+
+
+
+                                  ),
+
+                                  SizedBox(height: 10,),
+
                                   Container(
-                                      margin: const EdgeInsets.only(left: 10, right: 15),
-                                      child: Divider(color: Colors.black, height: 50,)),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(Radius.circular(40)),
+                                    ),
+                                    child:
+                                    ElevatedButton(child:Text("Sign in"),
+                                        onPressed: (){
+                                      _submit();
+                                        }),
                                   ),
 
-                                  Text("Or Sign In With"),
 
-                                  Expanded( child:
-                                  Container(
-                                      margin: const EdgeInsets.only(left: 15, right: 10),
-                                      child: Divider(color: Colors.black,height: 50,)),
+                                  SizedBox(height: 10,),
+
+                                  Row( children:[
+
+                                    Expanded( child:
+                                    Container(
+                                        margin: const EdgeInsets.only(left: 10, right: 15),
+                                        child: Divider(color: Colors.black, height: 50,)),
+                                    ),
+
+                                    Text("Or Sign In With"),
+
+                                    Expanded( child:
+                                    Container(
+                                        margin: const EdgeInsets.only(left: 15, right: 10),
+                                        child: Divider(color: Colors.black,height: 50,)),
+                                    ),
+                                  ],),
+
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+
+                                      Image(image: AssetImage("images/google_logo.png"),height: 50,width: 50,),
+
+                                      SizedBox(width: 10,),
+
+                                      Image(image: AssetImage("images/facebook_logo.png"),height: 50,width: 50,)
+                                    ],
                                   ),
-                                ],),
 
+                                  SizedBox(height: 10,),
 
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
+                                  Row(
 
-                                    Image(image: AssetImage("images/google_logo.png"),height: 50,width: 50,),
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text("Don't have an account?"),
 
-                                    SizedBox(width: 10,),
+                                      TextButton(
+                                          onPressed: (){
+                                            Navigator.push(context,MaterialPageRoute(builder: (context)=> LoginPage()));
+                                          },
+                                          child: Text("Log in",style: TextStyle(color: Colors.orange),)
+                                      ),
 
-                                    Image(image: AssetImage("images/facebook_logo.png"),height: 50,width: 50,)
-                                  ],
-                                ),
+                                      SizedBox(height: 10,)
+                                    ],
+                                  )
+                                ]
 
-                                SizedBox(height: 10,),
-
-                                Row(
-
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text("Don't have an account?"),
-
-                                    Text(" Sign up",style: TextStyle(color: Colors.orange),),
-
-                                    SizedBox(height: 10,)
-                                  ],
-                                )
-                              ]
-
+                            ),
                           ),
                         )
                     )

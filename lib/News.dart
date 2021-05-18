@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Favorite.dart';
+import 'login_page.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -201,6 +202,28 @@ class _NewsPageState extends State<NewsPage> {
 
                             onPressed: (){
                               Navigator.push(context,MaterialPageRoute(builder: (context)=> Favorite() ));
+                            }
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: SizedBox(
+                        height: 45,
+                        child: RaisedButton(
+                            color: Colors.grey[100],
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.favorite,color: Colors.red[300],size: 32,),
+                                SizedBox(width: 7,),
+                                Text("signup",style: TextStyle(fontSize: 21),)
+                              ],
+                            ),
+                            // shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: 10),
+
+                            onPressed: (){
+                              Navigator.push(context,MaterialPageRoute(builder: (context)=> LoginPage()));
                             }
                         ),
                       ),
