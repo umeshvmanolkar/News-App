@@ -1,7 +1,12 @@
 
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:news_app/News.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'signup_page.dart';
+import 'package:http/http.dart' as http;
 
 class LoginPage extends StatefulWidget {
   @override
@@ -10,19 +15,69 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  final GlobalKey<FormState> _formKey = GlobalKey();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  bool _isLoading = false;
 
   Map <String,String> _authData = {
 
     'email':'',
     'password':''
   };
+  
+  signIn(String email, String password) async{
+    Map data = {
+      'email':email,
+      'password':password
+    };
+    // var response = await http.get(Uri.https("www.getpostman.com", "collections/299632c9a18ed457ba78"));//API
+    final response = await http.post(
+        Uri.parse('https://nodejs-register-login-app.herokuapp.com/login'),body: data);
+
+    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    if(response.statusCode == 200){
+      var jsonData = json.decode(response.body);
+      debugPrint(jsonData.toString());
+      if(jsonData['Success']=="Success!"){
+        setState(() {
+          // sharedPreferences.setString("token",jsonData["token"]);
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NewsPage()),(Route<dynamic> route) => false);
+
+          String jsonsDataString = response.body.toString(); // toString of Response's body is assigned to jsonDataString
+          data = jsonDecode(jsonsDataString);
+          print(data.toString());
+
+          print(response.body);
+
+          print(jsonData);
+
+        });
+        print(jsonData['Success'].toString());
+
+      } else {
+        print(jsonData['Success'].toString());
+      }
+
+    }
+    else{
+      print(response);
+      print(response.body);
+    }
+  }
+
+
+  final GlobalKey<FormState> _formKey = GlobalKey();
+
+  
 
   Future _submit()async{
     if(!_formKey.currentState.validate()){
       //invalid
       return;
     }
+
     _formKey.currentState.save();
   }
 
@@ -98,6 +153,8 @@ class _LoginPageState extends State<LoginPage> {
                                   _authData['email'] = value;
                               },
 
+                              controller: emailController,
+
 
                             ),
 
@@ -111,7 +168,6 @@ class _LoginPageState extends State<LoginPage> {
                                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
                                     hintText: "Password",
                                     border:
-
                                     OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
                                     validator: (value){
                                   if(value.isEmpty || value.length<5){
@@ -122,6 +178,8 @@ class _LoginPageState extends State<LoginPage> {
                                 onSaved: (value){
                                   _authData['password'] = value;
                                 },
+
+                                controller: passwordController
                               ),
 
                               SizedBox(height: 15,),
@@ -130,35 +188,72 @@ class _LoginPageState extends State<LoginPage> {
 
                               SizedBox(height: 10,),
 
-                              Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.all(Radius.circular(40)),
+                              // Container(
+                              //     decoration: BoxDecoration(
+                              //       color: Colors.white,
+                              //       borderRadius: BorderRadius.all(Radius.circular(40)),
+                              //     ),
+                              //   child:
+                              // ElevatedButton(child:Text("Sign in"),
+                              //     onPressed: (){
+                              //       _submit();
+                              //     }),
+                              // ),
+
+                              // RaisedButton(
+                              //   onPressed: (){
+                              //   _submit();
+                              //   } ,
+                              //   color:Colors.blue,
+                              //
+                              //   shape: RoundedRectangleBorder(
+                              //           borderRadius: BorderRadius.circular(30)
+                              //     ),
+                              //   child: Text('Sign in',
+                              //   style: TextStyle(color: Colors.white),),
+                              //  ),
+
+
+
+                                Padding(
+
+                                  padding: EdgeInsets.only(left: 90,right: 90),
+                                  child: FlatButton(
+                                      onPressed: () async{
+
+                                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                                        prefs.setString('email', emailController.text);
+                                    signIn(emailController.text,passwordController.text);
+                                    print("click");
+                                  },
+                                      color: Colors.blue[400],
+
+                                      shape: StadiumBorder(),
+                                      child:Text('Sign in',
+                                          style: TextStyle(color: Colors.white,fontSize: 20),)
+
                                   ),
-                                child:
-                              ElevatedButton(child:Text("Sign in"),
-                                  onPressed: (){
-                                    _submit();
-                                  }),
-                              ),
-
-
-                              SizedBox(height: 10,),
-
-                              Row( children:[
-
-                                Expanded( child:
-                                Container(
-                                  margin: const EdgeInsets.only(left: 10, right: 15),
-                                    child: Divider(color: Colors.black, height: 50,)),
                                 ),
 
-                              Text("Or Sign In With"),
 
-                                Expanded( child:
-                                Container(
-                                    margin: const EdgeInsets.only(left: 15, right: 10),
-                                    child: Divider(color: Colors.black,height: 50,)),
+
+                                  SizedBox(height: 10,),
+
+                                  Row( children:[
+
+                                  Expanded( child:
+                                  Container(
+                                  margin: const EdgeInsets.only(left: 10, right: 15),
+                                  child: Divider(color: Colors.black, height: 50,)),
+                                  ),
+
+                                  Text("Or Sign In With"),
+
+                                  Expanded( child:
+                                  Container(
+                                  margin: const EdgeInsets.only(left: 15, right: 10),
+                                  child: Divider(color: Colors.black,
+                                height: 50,)),
                                 ),
                               ],),
 

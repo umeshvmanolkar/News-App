@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:news_app/login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Favorite.dart';
 import 'News.dart';
@@ -8,8 +9,17 @@ import 'News.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-void main() {
-  runApp(NewsApp());
+// void main() {
+//   runApp(NewsApp());
+// }
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var email = prefs.getString('email');
+  print(email);
+  runApp(MaterialApp(home: email == null ? LoginPage() : NewsPage()));
+
 }
 
 class NewsApp extends StatefulWidget {
@@ -19,6 +29,8 @@ class NewsApp extends StatefulWidget {
 }
 
 class _NewsAppState extends State<NewsApp> {
+
+
     int _currentIndex = 0;
     final List _children = [
       NewsPage(),

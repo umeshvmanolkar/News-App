@@ -12,6 +12,10 @@ class NewsPage extends StatefulWidget {
   _NewsPageState createState() => _NewsPageState();
 }
 
+
+
+
+
 //To get the saved list of favourite news from shared preferences
 Future<List> getNamePreference() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -20,6 +24,9 @@ Future<List> getNamePreference() async{
   List<int> mOriginaList = mList.map((i)=> int.parse(i)).toList();
   return mOriginaList;
 }
+
+
+
 
 class _NewsPageState extends State<NewsPage> {
   List favouriteNewsList = [];
@@ -207,27 +214,6 @@ class _NewsPageState extends State<NewsPage> {
                       ),
                     ),
 
-                    Expanded(
-                      child: SizedBox(
-                        height: 45,
-                        child: RaisedButton(
-                            color: Colors.grey[100],
-                            child:Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.favorite,color: Colors.red[300],size: 32,),
-                                SizedBox(width: 7,),
-                                Text("signup",style: TextStyle(fontSize: 21),)
-                              ],
-                            ),
-                            // shape: RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: 10),
-
-                            onPressed: (){
-                              Navigator.push(context,MaterialPageRoute(builder: (context)=> LoginPage()));
-                            }
-                        ),
-                      ),
-                    ),
                   ],
                 ),
                 ],
