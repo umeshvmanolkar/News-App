@@ -18,72 +18,43 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  bool _isLoading = false;
-
-  Map <String,String> _authData = {
-
-    'email':'',
-    'password':''
-  };
   
-  signIn(String email, String password) async{
+  logIn(String email, String password) async{
     Map data = {
       'email':email,
       'password':password
     };
-    // var response = await http.get(Uri.https("www.getpostman.com", "collections/299632c9a18ed457ba78"));//API
-    final response = await http.post(
-        Uri.parse('https://nodejs-register-login-app.herokuapp.com/login'),body: data);
 
-    // SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    final response = await http.post(Uri.parse('https://nodejs-register-login-app.herokuapp.com/login'),body: data);  //API response
 
-    if(response.statusCode == 200){
+    if(response.statusCode == 200){            //checking status of API
+
       var jsonData = json.decode(response.body);
-      debugPrint(jsonData.toString());
-      if(jsonData['Success']=="Success!"){
-        setState(() {
-          // sharedPreferences.setString("token",jsonData["token"]);
-          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NewsPage()),(Route<dynamic> route) => false);
 
+      if(jsonData['Success']=="Success!"){                                    //validating user login credentials
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('email', email);                                      //Storing user email id into shared preferences
+
+        setState(() {
+
+          Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NewsPage()),(Route<dynamic> route) => false);       //opening news.dart page
           String jsonsDataString = response.body.toString(); // toString of Response's body is assigned to jsonDataString
           data = jsonDecode(jsonsDataString);
-          print(data.toString());
-
-          print(response.body);
-
-          print(jsonData);
 
         });
-        print(jsonData['Success'].toString());
 
       } else {
-        print(jsonData['Success'].toString());
-      }
 
-    }
-    else{
-      print(response);
-      print(response.body);
+      }
+    } else{
+
     }
   }
-
 
   final GlobalKey<FormState> _formKey = GlobalKey();
 
-  
-
-  Future _submit()async{
-    if(!_formKey.currentState.validate()){
-      //invalid
-      return;
-    }
-
-    _formKey.currentState.save();
-  }
-
   @override
   Widget build(BuildContext context) {
-    var ui;
     return MaterialApp(
       home: Scaffold(
         body:Container(
@@ -112,12 +83,13 @@ class _LoginPageState extends State<LoginPage> {
                       )),
 
                   SizedBox(height: 130,),
+
                   Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(topLeft: Radius.circular(40),topRight: Radius.circular(40)),
-
                       ),
+
                     child: Padding(
                   padding: const EdgeInsets.all(16.0),
                       child: Form(
@@ -129,36 +101,34 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment:
                             MainAxisAlignment.spaceEvenly,
                             children: <Widget>[
-                              Center(child: Text("Sign in",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25), )),
+                              Center(child: Text("Sign in",style: TextStyle(color:Colors.blue[900],fontWeight:FontWeight.bold,fontSize: 25), )),
 
                             SizedBox(height: 20,),
+
                             TextFormField(
-                                style: TextStyle(fontSize: 18.0,height: 1),
+
                                 decoration: InputDecoration(
+                                    hintText: "Email:",
+                                    hintStyle: TextStyle(color: Colors.white,fontSize: 18),
+                                  filled: true,
+                                    fillColor: Colors.brown[300],
                                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                    hintText: "Email",
+
                                     border:
                                     OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
 
                                     validator: (value){
-                                  // ignore: missing_return
-                                  if(value.isEmpty||!value.contains('@')){
-                                    // ignore: missing_return
-                                    return "Invalid Email";
-                                  }
-                                  return null;
+                                       // ignore: missing_return
+                                      if(value.isEmpty||!value.contains('@')){
+                                      // ignore: missing_return
+                                      return "Invalid Email";
+                                      }
+                                      return null;
                                     },
-
-                              onSaved: (value){
-                                  _authData['email'] = value;
-                              },
-
                               controller: emailController,
-
-
                             ),
 
-                              SizedBox(height: 15,),
+                              SizedBox(height: 13,),
 
                               TextFormField(
                                 obscureText: true,
@@ -166,7 +136,10 @@ class _LoginPageState extends State<LoginPage> {
 
                                 decoration: InputDecoration(
                                     contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                    hintText: "Password",
+                                    hintStyle: TextStyle(color: Colors.white,fontSize: 18),
+                                    filled: true,
+                                    fillColor: Colors.brown[300],
+                                    hintText: "Password:",
                                     border:
                                     OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
                                     validator: (value){
@@ -175,9 +148,6 @@ class _LoginPageState extends State<LoginPage> {
                                   }
                                   return null;
                                     },
-                                onSaved: (value){
-                                  _authData['password'] = value;
-                                },
 
                                 controller: passwordController
                               ),
@@ -188,53 +158,31 @@ class _LoginPageState extends State<LoginPage> {
 
                               SizedBox(height: 10,),
 
-                              // Container(
-                              //     decoration: BoxDecoration(
-                              //       color: Colors.white,
-                              //       borderRadius: BorderRadius.all(Radius.circular(40)),
-                              //     ),
-                              //   child:
-                              // ElevatedButton(child:Text("Sign in"),
-                              //     onPressed: (){
-                              //       _submit();
-                              //     }),
-                              // ),
-
-                              // RaisedButton(
-                              //   onPressed: (){
-                              //   _submit();
-                              //   } ,
-                              //   color:Colors.blue,
-                              //
-                              //   shape: RoundedRectangleBorder(
-                              //           borderRadius: BorderRadius.circular(30)
-                              //     ),
-                              //   child: Text('Sign in',
-                              //   style: TextStyle(color: Colors.white),),
-                              //  ),
-
-
-
                                 Padding(
 
                                   padding: EdgeInsets.only(left: 90,right: 90),
                                   child: FlatButton(
+                                      padding: EdgeInsets.symmetric(vertical: 12),
                                       onPressed: () async{
+                                           if (_formKey.currentState.validate()) {
+                                             if (emailController.text.contains("@") &&
+                                                 emailController.text.isNotEmpty) {
 
-                                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                                        prefs.setString('email', emailController.text);
-                                    signIn(emailController.text,passwordController.text);
-                                    print("click");
+                                               logIn(emailController.text,
+                                                   passwordController.text);
+                                             }
+                                             else {
+                                               print("invalid email");
+                                             }
+                                           }
                                   },
                                       color: Colors.blue[400],
-
                                       shape: StadiumBorder(),
                                       child:Text('Sign in',
-                                          style: TextStyle(color: Colors.white,fontSize: 20),)
+                                        style: TextStyle(color: Colors.white,fontSize: 20),)
 
                                   ),
                                 ),
-
 
 
                                   SizedBox(height: 10,),
@@ -243,16 +191,16 @@ class _LoginPageState extends State<LoginPage> {
 
                                   Expanded( child:
                                   Container(
-                                  margin: const EdgeInsets.only(left: 10, right: 15),
-                                  child: Divider(color: Colors.black, height: 50,)),
+                                  margin: const EdgeInsets.only(left: 25, right: 10),
+                                  child: Divider(color: Colors.grey, height: 50,)),
                                   ),
 
-                                  Text("Or Sign In With"),
+                                  Text("Or Sign In With",style: TextStyle(fontWeight: FontWeight.bold),),
 
                                   Expanded( child:
                                   Container(
-                                  margin: const EdgeInsets.only(left: 15, right: 10),
-                                  child: Divider(color: Colors.black,
+                                  margin: const EdgeInsets.only(left: 10, right: 25),
+                                  child: Divider(color: Colors.grey,
                                 height: 50,)),
                                 ),
                               ],),

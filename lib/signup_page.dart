@@ -76,14 +76,17 @@ class _SignupPageState extends State<SignupPage> {
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  Center(child: Text("Sign Up",style: TextStyle(fontWeight:FontWeight.bold,fontSize: 25), )),
+                                  Center(child: Text("Sign Up",style: TextStyle(color:Colors.blue[900],fontWeight:FontWeight.bold,fontSize: 25), )),
 
                                   SizedBox(height: 20,),
                                   TextFormField(
                                     style: TextStyle(fontSize: 18.0,height: 1),
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                        hintText: "Email",
+                                        hintStyle: TextStyle(color: Colors.white,fontSize: 18),
+                                        filled: true,
+                                        fillColor: Colors.brown[300],
+                                        hintText: "Email:",
                                         border:
                                         OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
 
@@ -101,7 +104,7 @@ class _SignupPageState extends State<SignupPage> {
                                     },
                                   ),
 
-                                  SizedBox(height: 15,),
+                                  SizedBox(height: 10,),
 
                                   TextFormField(
 
@@ -109,9 +112,11 @@ class _SignupPageState extends State<SignupPage> {
 
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                        hintText: "Password",
-                                        border:
-                                        OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
+                                        hintStyle: TextStyle(color: Colors.white,fontSize: 18),
+                                        filled: true,
+                                        fillColor: Colors.brown[300],
+                                        hintText: "Password:",
+                                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
                                     obscureText: true,
                                     controller: _passwordController,
 
@@ -124,11 +129,9 @@ class _SignupPageState extends State<SignupPage> {
                                     onSaved: (value){
                                       _authData['password'] = value;
                                     },
-
-
                                   ),
 
-                                  SizedBox(height: 15,),
+                                  SizedBox(height: 10,),
 
                                   TextFormField(
 
@@ -136,7 +139,10 @@ class _SignupPageState extends State<SignupPage> {
 
                                     decoration: InputDecoration(
                                         contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-                                        hintText: "Re-enter Password",
+                                        hintStyle: TextStyle(color: Colors.white,fontSize: 18),
+                                        filled: true,
+                                        fillColor: Colors.brown[300],
+                                        hintText: "Re-enter Password:",
 
                                         border:
                                         OutlineInputBorder(borderRadius: BorderRadius.circular(16.0))),
@@ -148,23 +154,24 @@ class _SignupPageState extends State<SignupPage> {
                                       }
                                       return null;
                                     },
-
-
-
                                   ),
 
                                   SizedBox(height: 10,),
 
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(Radius.circular(40)),
-                                    ),
-                                    child:
-                                    ElevatedButton(child:Text("Sign in"),
+                                  Padding(
+
+                                    padding: EdgeInsets.only(left: 90,right: 90),
+                                    child: FlatButton(
+                                      padding: EdgeInsets.symmetric(vertical: 10),
                                         onPressed: (){
-                                      _submit();
-                                        }),
+                                          _submit();
+                                        },
+                                        color: Colors.blue[400],
+                                        shape: StadiumBorder(),
+                                        child:Text('Sign up',
+                                          style: TextStyle(color: Colors.white,fontSize: 20),)
+
+                                    ),
                                   ),
 
 
@@ -174,16 +181,16 @@ class _SignupPageState extends State<SignupPage> {
 
                                     Expanded( child:
                                     Container(
-                                        margin: const EdgeInsets.only(left: 10, right: 15),
-                                        child: Divider(color: Colors.black, height: 50,)),
+                                        margin: const EdgeInsets.only(left: 25, right: 10),
+                                        child: Divider(color: Colors.grey, height: 50,)),
                                     ),
 
-                                    Text("Or Sign In With"),
+                                    Text("Or Sign In With",style: TextStyle(fontWeight: FontWeight.bold),),
 
                                     Expanded( child:
                                     Container(
-                                        margin: const EdgeInsets.only(left: 15, right: 10),
-                                        child: Divider(color: Colors.black,height: 50,)),
+                                        margin: const EdgeInsets.only(left: 10, right: 25),
+                                        child: Divider(color: Colors.grey,height: 50,)),
                                     ),
                                   ],),
 
