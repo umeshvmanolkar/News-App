@@ -14,8 +14,6 @@ class NewsPage extends StatefulWidget {
 
 
 
-
-
 //To get the saved list of favourite news from shared preferences
 Future<List> getNamePreference() async{
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -26,16 +24,13 @@ Future<List> getNamePreference() async{
 }
 
 
-
-
-class _NewsPageState extends State<NewsPage> {
+class _NewsPageState extends State<NewsPage> with WidgetsBindingObserver{
   List favouriteNewsList = [];
   int id;
 
-  void initState() {
-    getNamePreference().then(updateFavList);
-    super.initState();
-  }
+
+
+
 
   Future getNewsData() async{
 
@@ -67,9 +62,12 @@ class _NewsPageState extends State<NewsPage> {
                   builder: (context, snapshot){
 
                     if(snapshot.data == null){
+                      var now = DateTime.now();
                       return Container(
                         child: Center(
-                          child: Text('Loading...'),
+                          child: Text(now.timeZoneName),
+
+
                         ),
                       );
                     } else return ListView.builder(itemCount: snapshot.data.length,itemBuilder: (context,i){

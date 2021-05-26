@@ -17,6 +17,7 @@ class _LoginPageState extends State<LoginPage> {
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  bool _isLoading = false;
 
   
   logIn(String email, String password) async{
@@ -36,6 +37,7 @@ class _LoginPageState extends State<LoginPage> {
         prefs.setString('email', email);                                      //Storing user email id into shared preferences
 
         setState(() {
+          _isLoading = false;
 
           Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => NewsPage()),(Route<dynamic> route) => false);       //opening news.dart page
           String jsonsDataString = response.body.toString(); // toString of Response's body is assigned to jsonDataString
@@ -55,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return _isLoading ? Center(child: CircularProgressIndicator(),): MaterialApp(
       home: Scaffold(
         body:Container(
 
@@ -164,6 +166,9 @@ class _LoginPageState extends State<LoginPage> {
                                   child: FlatButton(
                                       padding: EdgeInsets.symmetric(vertical: 12),
                                       onPressed: () async{
+                                        setState(() {
+                                          _isLoading = true;
+                                        });
                                            if (_formKey.currentState.validate()) {
                                              if (emailController.text.contains("@") &&
                                                  emailController.text.isNotEmpty) {
